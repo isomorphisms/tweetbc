@@ -15,6 +15,12 @@ import tweepy # Twitter API class: http://github.com/joshthecoder/tweepy
 class tweetBC(object):
     TWITTER_USERNAME = 'bc_l' # configure me
     TWITTER_PASSWORD = 'XXX' # configure me
+    MESSAGE_CACHE = 'last_seen.txt' # possibly configure me
+    CONSUMERKEY='check your email hilary'
+    CONSUMERSECRET='check your email hilary'
+    APPTOKENKEY='188131343-OgIQY14spwhSWgmj3BKNbNUfCKJs13koktkCult5'
+    APPTOKENSECRET='c05IzVvFrztD8Val5ej9W8399x2E20zilDAHvwL8078'
+
     DM_CACHE = 'last_seen.txt' # possibly configure me
     
     def __init__(self):
@@ -51,8 +57,9 @@ class tweetBC(object):
             
         return last_dm_id
 
-    def init_twitter(self, username, password):
-        auth = tweepy.BasicAuthHandler(username, password)
+    def init_twitter(self, consumerkey=CONSUMERKEY, consumersecret=CONSUMERSECRET, access_token=APPKEYTOKEN, access_token_secret=APPTOKENSECRET):
+        auth = tweepy.OAuthHandler(consumerkey, consumersecret)
+        auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
         return api
         
