@@ -15,19 +15,19 @@ import tweepy # Twitter API class: http://github.com/joshthecoder/tweepy
 class tweetBC(object):
     TWITTER_USERNAME = 'bc_l' # configure me
     TWITTER_PASSWORD = 'XXX' # configure me
-    DM_CACHE = 'last_seen.txt' # possibly configure me
+    MESSAGE_CACHE = 'last_seen.txt' # possibly configure me
     CONSUMERKEY = 'check your email hilary'
     CONSUMERSECRET = 'check your email hilary'
     APPTOKENKEY = '188131343-OgIQY14spwhSWgmj3BKNbNUfCKJs13koktkCult5'
     APPTOKENSECRET = 'c05IzVvFrztD8Val5ej9W8399x2E20zilDAHvwL8078'
     
     def __init__(self):
-        api = self.init_twitter(self.TWITTER_USERNAME, self.TWITTER_PASSWORD, self.CONSUMERKEY, self.CONSUMERSECRET, self.APPTOKENKEY, self.APPTOKENSECRET)
+        api = self.login_twitter(self.CONSUMERKEY, self.CONSUMERSECRET, self.APPTOKENKEY, self.APPTOKENSECRET)
 
-        last_dm_id = self.get_last_seen()
-        dms = api.direct_messages(since_id=last_dm_id)
+        last_time_i_checked = self.get_last_seen()
+        talked_to_me = api.mentions(since_id=last_time_i_checked)
 
-        for m in dms:
+        for m in talked_to_me:
             p = subprocess.Popen("bc -l", shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             out, err = p.communicate(m.text + "\n")
             answer = out.strip()
@@ -39,23 +39,23 @@ class tweetBC(object):
                 except:
                     pass
             
-            last_dm_id = m.id
+            last_time_i_checked = m.id
             
-        f = open(self.DM_CACHE, 'w')
-        f.write(str(last_dm_id))
+        f = open(self.MESSAGE_CACHE, 'w')
+        f.write(str(last_time_i_checked))
         f.close()
     
     def get_last_seen(self):
         try:
-            f = open(self.DM_CACHE, 'r')
-            last_dm_id = f.read()
+            f = open(self.MESSAGE_CACHE, 'r')
+            last_time_i_checked = f.read()
             f.close()
         except IOError:
-            last_dm_id = None
+            last_time_i_checked = None
             
-        return last_dm_id
+        return last_time_i_checked
 
-    def init_twitter(self, consumer_key, consumer_secret, access_token, access_token_secret):
+    def login_twitter(self, consumer_key, consumer_secret, access_token, access_token_secret):
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
