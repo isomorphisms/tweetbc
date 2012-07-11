@@ -16,9 +16,13 @@ class tweetBC(object):
     TWITTER_USERNAME = 'bc_l' # configure me
     TWITTER_PASSWORD = 'XXX' # configure me
     DM_CACHE = 'last_seen.txt' # possibly configure me
+    CONSUMERKEY = 'check your email hilary'
+    CONSUMERSECRET = 'check your email hilary'
+    APPTOKENKEY = '188131343-OgIQY14spwhSWgmj3BKNbNUfCKJs13koktkCult5'
+    APPTOKENSECRET = 'c05IzVvFrztD8Val5ej9W8399x2E20zilDAHvwL8078'
     
     def __init__(self):
-        api = self.init_twitter(self.TWITTER_USERNAME, self.TWITTER_PASSWORD)
+        api = self.init_twitter(self.TWITTER_USERNAME, self.TWITTER_PASSWORD, self.CONSUMERKEY, self.CONSUMERSECRET, self.APPTOKENKEY, self.APPTOKENSECRET)
 
         last_dm_id = self.get_last_seen()
         dms = api.direct_messages(since_id=last_dm_id)
@@ -51,8 +55,9 @@ class tweetBC(object):
             
         return last_dm_id
 
-    def init_twitter(self, username, password):
-        auth = tweepy.BasicAuthHandler(username, password)
+    def init_twitter(self, consumer_key, consumer_secret, access_token, access_token_secret):
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
         return api
         
